@@ -32,6 +32,7 @@ target_include_directories(${EXE_TESTS} PUBLIC ${DIR_UTILS} ${DIR_DATA_STRUCTURE
 target_link_libraries(${EXE_TESTS} PRIVATE
     ${LIB_MEM_UTILS}
     ${LIB_PRINT_UTILS}
+    ${LIB_BUFFER}
     ${LIB_FIXED_SIZE_BUFFER}
     ${LIB_LISTS}
     ${LIB_TRIE}

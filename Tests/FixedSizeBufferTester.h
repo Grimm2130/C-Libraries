@@ -3,6 +3,7 @@
 
 #include "FixedSizeBuffer.h"
 #include "Utils.h"
+#include "Person.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <errno.h>

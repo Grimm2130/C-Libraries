@@ -1,6 +1,7 @@
+#include "BufferTester.h"
+#include "FixedSizeBufferTester.h"
 #include "TestUtils.h"
 #include "ListTester.h"
-#include "FixedSizeBufferTester.h"
 #include "TrieTester.h"
 #include "FileTester.h"
 #include "DirectoryTester.h"
@@ -9,18 +10,21 @@ int main()
 {
     int res = 1;
 
-    if (RunTestsFixedSizeBuffer())
+    if (RunTestsBuffer())
     {
-        if (RunTestsLists())
+        if (RunTestsFixedSizeBuffer())
         {
-            // Test Trie Functionality
-            if (RunTestsTrie())
+            if (RunTestsLists())
             {
-                if (RunTestsFileTester())
+                // Test Trie Functionality
+                if (RunTestsTrie())
                 {
-                    if (RunTestDirectoryTester())
+                    if (RunTestsFileTester())
                     {
-                        res = 0;
+                        if (RunTestDirectoryTester())
+                        {
+                            res = 0;
+                        }
                     }
                 }
             }
