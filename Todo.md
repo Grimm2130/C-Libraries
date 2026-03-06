@@ -1,19 +1,19 @@
 # Todo List
 
-- [ ] Implement Variable Size Buffer. Use implementation of current buffer
+- [ ] Implement Variable Size FixedSizeBuffer. Use implementation of current buffer
 
-- [ ] Test Variable Size Buffer.
+- [ ] Test Variable Size FixedSizeBuffer.
 
-- [ ] Implement Fixed Size Buffer. Use implementation of current buffer
+- [ ] Implement Fixed Size FixedSizeBuffer. Use implementation of current buffer
 
-- [ ] Test Fixed Size Buffer
+- [ ] Test Fixed Size FixedSizeBuffer
 
 - [ ] Implement Stack
-    - Buffer
+    - FixedSizeBuffer
     - List
 
 - [ ] Implement Queue
-    - Buffer
+    - FixedSizeBuffer
     - List
 
 - [ ] Complete String Steamer implementation

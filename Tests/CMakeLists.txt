@@ -23,35 +23,32 @@
 # add_subdirectory( ${PATH_UTILS} "${BIN_DIR}/Utils" )
 # add_subdirectory( ${PATH_GEN_LIBS} "${BIN_DIR}/Gen" )
 
-
 # # Generate Utils Library list
 # file( GLOB UTILS "${LIB_MEM_UTILS};${LIB_PRINT_UTILS}" )
 
 # Generate final exe
-add_executable( ${EXE_TESTS} Test.c )
-target_include_directories( ${EXE_TESTS} PUBLIC ${DIR_UTILS} ${DIR_DATA_STRUCTURES} ${DIR_FILE_SYS} )
-target_link_libraries( ${EXE_TESTS} PRIVATE
-    ${LIB_MEM_UTILS} 
-    ${LIB_PRINT_UTILS} 
-    ${LIB_BUFFER}
+add_executable(${EXE_TESTS} Test.c)
+target_include_directories(${EXE_TESTS} PUBLIC ${DIR_UTILS} ${DIR_DATA_STRUCTURES} ${DIR_FILE_SYS})
+target_link_libraries(${EXE_TESTS} PRIVATE
+    ${LIB_MEM_UTILS}
+    ${LIB_PRINT_UTILS}
+    ${LIB_FIXED_SIZE_BUFFER}
     ${LIB_LISTS}
     ${LIB_TRIE}
     ${LIB_FILE}
     ${LIB_DIRECTORY}
 )
 
-if( RUN_TESTS )
-    message( "Running Tests in ./${CMAKE_BINARY_DIR}/Tests/${EXE_TESTS}...." )
-    
-    # execute_process( 
-    #     COMMAND "./${CMAKE_BINARY_DIR}/Tests/${EXE_TESTS}" 
-    #     WORKING_DIRECTORY .
-    #     RESULT_VARIABLE RES
-    # )
+if(RUN_TESTS)
+    message("Running Tests in ./${CMAKE_BINARY_DIR}/Tests/${EXE_TESTS}....")
 
+    # execute_process(
+    # COMMAND "./${CMAKE_BINARY_DIR}/Tests/${EXE_TESTS}"
+    # WORKING_DIRECTORY .
+    # RESULT_VARIABLE RES
+    # )
     add_custom_command(TARGET ${EXE_TESTS} POST_BUILD
         COMMAND $<TARGET_FILE:${EXE_TESTS}>
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
-
-endif( RUN_TESTS )
+endif(RUN_TESTS)

@@ -1,4 +1,4 @@
-#include "Buffer.h"
+#include "FixedSizeBuffer.h"
 #include "Utils.h"
 #include <stdint.h>
 #include <stdbool.h>
@@ -8,7 +8,7 @@
 /// @brief  Validate the buffer type size
 /// @param obj
 /// @param size
-inline static void ValidateType(Buffer_t *const obj, const int size)
+inline static void ValidateType(FixedSizeBuffer_t *const obj, const int size)
 {
     if (obj->mItemSize != size)
     {
@@ -19,7 +19,7 @@ inline static void ValidateType(Buffer_t *const obj, const int size)
 /// @brief Update the buffer memory of needed
 /// @param obj
 /// @param size
-inline static void UpdateMem(Buffer_t *const obj, const int size)
+inline static void UpdateMem(FixedSizeBuffer_t *const obj, const int size)
 {
     uint32_t currCapInBytes = obj->mCurrCapacity * obj->mItemSize;
     uint32_t totalCapInBytes = obj->mCapacity * obj->mItemSize;
@@ -46,7 +46,7 @@ inline static void UpdateMem(Buffer_t *const obj, const int size)
     }
 }
 
-void BufferInit(Buffer_t *obj, const uint16_t tsize, const uint32_t capacity)
+void FixedSizeBufferInit(FixedSizeBuffer_t *obj, const uint16_t tsize, const uint32_t capacity)
 {
     obj->mSize = 0;
     obj->mItemSize = tsize;
@@ -55,14 +55,14 @@ void BufferInit(Buffer_t *obj, const uint16_t tsize, const uint32_t capacity)
     obj->mData = (char *)calloc(tsize * capacity, sizeof(char));
 }
 
-Buffer_t *BufferCreate(const uint16_t typeSize, const uint32_t capacity)
+FixedSizeBuffer_t *FixedSizeBufferCreate(const uint16_t typeSize, const uint32_t capacity)
 {
-    Buffer_t *objPtr = (Buffer_t *)calloc(1, sizeof(Buffer_t));
-    BufferInit(objPtr, typeSize, capacity);
+    FixedSizeBuffer_t *objPtr = (FixedSizeBuffer_t *)calloc(1, sizeof(FixedSizeBuffer_t));
+    FixedSizeBufferInit(objPtr, typeSize, capacity);
     return objPtr;
 }
 
-void BufferDestroy(Buffer_t *obj)
+void FixedSizeBufferDestroy(FixedSizeBuffer_t *obj)
 {
     if (obj)
     {
@@ -72,7 +72,7 @@ void BufferDestroy(Buffer_t *obj)
     }
 }
 
-void BufferAppend(Buffer_t *obj, void *dataPtr, const uint16_t size)
+void FixedSizeBufferAppend(FixedSizeBuffer_t *obj, void *dataPtr, const uint16_t size)
 {
     ValidateType(obj, size);
     UpdateMem(obj, size);
@@ -81,13 +81,13 @@ void BufferAppend(Buffer_t *obj, void *dataPtr, const uint16_t size)
 
     if (copied < size)
     {
-        ERROR_MSG("BufferAppend@(%p) Append operation failed\n", ((void *)(obj)));
+        ERROR_MSG("FixedSizeBufferAppend@(%p) Append operation failed\n", ((void *)(obj)));
     }
 
     obj->mSize += size;
 }
 
-void BufferPrepend(Buffer_t *obj, void *dataPtr, const uint16_t size)
+void FixedSizeBufferPrepend(FixedSizeBuffer_t *obj, void *dataPtr, const uint16_t size)
 {
     ValidateType(obj, size);
     UpdateMem(obj, size);
@@ -98,13 +98,13 @@ void BufferPrepend(Buffer_t *obj, void *dataPtr, const uint16_t size)
 
     if (Memncpy(obj->mData, (char *)dataPtr, size, size) != size)
     {
-        ERROR_MSG("BufferPrepend@(%p) Prepend operation failed\n", ((void *)(obj)));
+        ERROR_MSG("FixedSizeBufferPrepend@(%p) Prepend operation failed\n", ((void *)(obj)));
     }
 
     obj->mSize += size;
 }
 
-void *BufferGet(Buffer_t *obj, const uint32_t index, const uint16_t size)
+void *FixedSizeBufferGet(FixedSizeBuffer_t *obj, const uint32_t index, const uint16_t size)
 {
     ValidateType(obj, size);
 
@@ -118,7 +118,7 @@ void *BufferGet(Buffer_t *obj, const uint32_t index, const uint16_t size)
     return (void *)(obj->mData + effSize);
 }
 
-void BufferSet(Buffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size)
+void FixedSizeBufferSet(FixedSizeBuffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size)
 {
     ValidateType(obj, size);
 
@@ -126,7 +126,7 @@ void BufferSet(Buffer_t *obj, const uint32_t index, void *dataPtr, const uint16_
 
     if (effSize >= obj->mSize)
     {
-        // WARN_MSG("BufferSet@(%p) Append operation failed\n", ((void *)(obj)));
+        // WARN_MSG("FixedSizeBufferSet@(%p) Append operation failed\n", ((void *)(obj)));
         return;
     }
 
@@ -134,11 +134,11 @@ void BufferSet(Buffer_t *obj, const uint32_t index, void *dataPtr, const uint16_
 
     if (Memncpy(ptr, (char *)dataPtr, size, size) == 0)
     {
-        ERROR_MSG("BufferSet@(%p) Failed\n", ((void *)(obj)));
+        ERROR_MSG("FixedSizeBufferSet@(%p) Failed\n", ((void *)(obj)));
     }
 }
 
-void *BufferRemove(Buffer_t *obj, const uint32_t index, const uint16_t size)
+void *FixedSizeBufferRemove(FixedSizeBuffer_t *obj, const uint32_t index, const uint16_t size)
 {
     ValidateType(obj, size);
 
@@ -155,14 +155,14 @@ void *BufferRemove(Buffer_t *obj, const uint32_t index, const uint16_t size)
     // Copy object at location
     if (Memncpy(dataPtr, ptr, size, size) == 0)
     {
-        ERROR_MSG("BufferRemove@(%p) Failed on caching\n", ((void *)(obj)));
+        ERROR_MSG("FixedSizeBufferRemove@(%p) Failed on caching\n", ((void *)(obj)));
     }
 
     // Shift the remaining objects left
     int shiftSize = (obj->mSize - effIndex) - size;
     if (ShiftData(obj->mData, obj->mSize, effIndex + size, effIndex, shiftSize) != shiftSize)
     {
-        ERROR_MSG("BufferRemove@(%p) Failed\n", ((void *)(obj)));
+        ERROR_MSG("FixedSizeBufferRemove@(%p) Failed\n", ((void *)(obj)));
     }
 
     obj->mSize -= size;
@@ -170,21 +170,22 @@ void *BufferRemove(Buffer_t *obj, const uint32_t index, const uint16_t size)
     return dataPtr;
 }
 
-void *BufferGetLast(Buffer_t *obj, const uint32_t size)
+void *FixedSizeBufferGetLast(FixedSizeBuffer_t *obj, const uint32_t size)
 {
-    ValidateType( obj, size );
+    ValidateType(obj, size);
 
     uint32_t lastOffset = obj->mSize - size;
 
-    if( lastOffset < 0 ) return NULL;
+    if (lastOffset < 0)
+        return NULL;
     else
     {
         int lastIndex = lastOffset / size;
-        return BufferGet( obj, lastIndex, size );
+        return FixedSizeBufferGet(obj, lastIndex, size);
     }
 }
 
-char *BufferGetDataPtr(Buffer_t *obj, bool copy)
+char *FixedSizeBufferGetDataPtr(FixedSizeBuffer_t *obj, bool copy)
 {
     char *temp;
 
@@ -194,7 +195,7 @@ char *BufferGetDataPtr(Buffer_t *obj, bool copy)
 
         if (Memncpy(temp, obj->mData, obj->mSize, obj->mSize) != obj->mSize)
         {
-            ERROR_MSG("BufferGetDataPtr@(%p) Failed\n", ((void *)(obj)));
+            ERROR_MSG("FixedSizeBufferGetDataPtr@(%p) Failed\n", ((void *)(obj)));
         }
     }
     else
