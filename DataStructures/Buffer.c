@@ -59,7 +59,9 @@ void BufferDestroy(Buffer_t *obj)
     if (obj)
     {
         if (obj->mData)
+        {
             free(obj->mData);
+        }
         obj->mData = NULL;
     }
 }

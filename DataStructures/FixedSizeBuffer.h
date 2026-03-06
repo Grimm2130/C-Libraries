@@ -4,13 +4,16 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+typedef struct Buffer Buffert_t;
+
+/**
+ * Fixed size buffer. Enforces fixed size contraints on all objects appended to memory. Used the variable sized buffer for memory operations.
+ */
+
 typedef struct FixedSizeBuffer
 {
-    uint16_t mItemSize;
-    uint32_t mSize;
-    uint32_t mCurrCapacity;
-    uint32_t mCapacity;
-    char *mData;
+    uint16_t mItemSize;         // Item size for fixed size buffer
+    Buffer_t *mBuffer;          // Pointer to variable sized buffer object
 } FixedSizeBuffer_t;
 
 #define MIN_BUFFER_CAPACITY 1000U

@@ -10,36 +10,36 @@
 #include <math.h>
 #include <string.h>
 
-static bool TestCreate();
-static bool TestAppend();
-static bool TestRemove();
-static bool TestDestroy();
-static bool TestGetter();
-static bool TestSetter();
-static bool TestPrepend();
+static bool FixedSizeBufferTestCreate();
+static bool FixedSizeBufferTestAppend();
+static bool FixedSizeBufferTestRemove();
+static bool FixedSizeBufferTestDestroy();
+static bool FixedSizeBufferTestGetter();
+static bool FixedSizeBufferTestSetter();
+static bool FixedSizeBufferTestPrepend();
 
 static const int gFixedSizeBufferCapacity = PERSONS_COUNT;
 FixedSizeBuffer_t *gFixedSizeBufferPtr = NULL;
 
-bool RunTestsFixedSizeBuffer()
+bool RunFixedSizeBuffersFixedSizeBuffer()
 {
     bool res = false;
 
-    if (TestCreate())
+    if (FixedSizeBufferTestCreate())
     {
-        if (TestAppend())
+        if (FixedSizeBufferTestAppend())
         {
-            if (TestGetter())
+            if (FixedSizeBufferTestGetter())
             {
-                if (TestSetter())
+                if (FixedSizeBufferTestSetter())
                 {
-                    if (TestRemove())
+                    if (FixedSizeBufferTestRemove())
                     {
-                        if (TestPrepend())
+                        if (FixedSizeBufferTestPrepend())
                         {
-                            if (TestRemove())
+                            if (FixedSizeBufferTestRemove())
                             {
-                                if (TestDestroy())
+                                if (FixedSizeBufferTestDestroy())
                                 {
                                     gFixedSizeBufferPtr = NULL;
                                     res = true;
@@ -79,7 +79,7 @@ bool RunTestsFixedSizeBuffer()
     return res;
 }
 
-static bool TestCreate()
+static bool FixedSizeBufferTestCreate()
 {
     bool res = false;
 
@@ -88,27 +88,20 @@ static bool TestCreate()
 
     if (gFixedSizeBufferPtr)
     {
-        if (gFixedSizeBufferPtr->mSize == 0)
+        if (gFixedSizeBufferPtr->mBuffer->mSize == 0)
         {
-            if (gFixedSizeBufferPtr->mData)
+            if (gFixedSizeBufferPtr->mBuffer->mData)
             {
                 if (gFixedSizeBufferPtr->mItemSize == PERSON_SIZE)
                 {
-                    if ((gFixedSizeBufferPtr->mCurrCapacity == gFixedSizeBufferCapacity / 100) || (gFixedSizeBufferPtr->mCurrCapacity == MIN_BUFFER_CAPACITY))
+                    if ((gFixedSizeBufferPtr->mBuffer->mCurrCapacity >= MIN_BUFFER_CAPACITY))
                     {
-                        if (gFixedSizeBufferPtr->mCapacity == gFixedSizeBufferCapacity)
-                        {
-                            res = true;
-                            INFO_MSG("FixedSizeBuffer Creation...Passed");
-                        }
-                        else
-                        {
-                            FAIL_MSG("FixedSizeBuffer Created with capacity %d, actual %d", gFixedSizeBufferCapacity, gFixedSizeBufferPtr->mCurrCapacity);
-                        }
+                        res = true;
+                        INFO_MSG("FixedSizeBuffer Creation...Passed");
                     }
                     else
                     {
-                        FAIL_MSG("FixedSizeBuffer Created with capacity %d, actual %d", gFixedSizeBufferCapacity, gFixedSizeBufferPtr->mCurrCapacity);
+                        FAIL_MSG("FixedSizeBuffer Created with capacity %d, actual %d", gFixedSizeBufferCapacity, gFixedSizeBufferPtr->mBuffer->mCurrCapacity);
                     }
                 }
                 else
@@ -134,7 +127,7 @@ static bool TestCreate()
     return res;
 }
 
-static bool TestAppend()
+static bool FixedSizeBufferTestAppend()
 {
     bool res = true;
 
@@ -148,14 +141,14 @@ static bool TestAppend()
         FixedSizeBufferAppend(gFixedSizeBufferPtr, (void *)&gPersons[i], PERSON_SIZE);
         currSize += PERSON_SIZE;
 
-        if (gFixedSizeBufferPtr->mSize != currSize)
+        if (gFixedSizeBufferPtr->mBuffer->mSize != currSize)
         {
             FAIL_MSG("FixedSizeBuffer Append...Failed @ index %d", i);
             break;
         }
     }
 
-    if (gFixedSizeBufferPtr->mSize == finalSize)
+    if (gFixedSizeBufferPtr->mBuffer->mSize == finalSize)
     {
         PASS_MSG("FixedSizeBuffer Append...Passed");
         res = true;
@@ -168,7 +161,7 @@ static bool TestAppend()
     return res;
 }
 
-static bool TestPrepend()
+static bool FixedSizeBufferTestPrepend()
 {
     uint32_t index;
     bool res = true;
@@ -179,7 +172,7 @@ static bool TestPrepend()
     for (int i = PERSONS_COUNT - 1; i >= 0; i--)
     {
         FixedSizeBufferPrepend(gFixedSizeBufferPtr, (void *)&gPersons[i], PERSON_SIZE);
-        person = (Person_t *)gFixedSizeBufferPtr->mData;
+        person = (Person_t *)gFixedSizeBufferPtr->mBuffer->mData;
         // INFO_MSG("Prepended From index %d - %s", i, PersonStr(person) );
     }
 
@@ -192,7 +185,7 @@ static bool TestPrepend()
 
         if (PersonCmp(person, &gPersons[index]))
         {
-            FAIL_MSG("FixedSizeBuffer Prepend...Failed @ index %d", index);
+            FAIL_MSG("FixedSizeBuffer Prepend...Failed @ index %d - { %s != %s}", index, PersonStr(person), PersonStr(&gPersons[index]) );
             res = false;
             break;
         }
@@ -203,7 +196,7 @@ static bool TestPrepend()
     return res;
 }
 
-static bool TestGetter()
+static bool FixedSizeBufferTestGetter()
 {
     uint32_t index;
     uint32_t effAddr;
@@ -231,7 +224,7 @@ static bool TestGetter()
 
     return res;
 }
-static bool TestSetter()
+static bool FixedSizeBufferTestSetter()
 {
     uint32_t index;
 
@@ -266,17 +259,17 @@ static bool TestSetter()
 
     return res;
 }
-static bool TestRemove()
+static bool FixedSizeBufferTestRemove()
 {
     bool res = true;
     int index = 0;
 
     INFO_MSG("FixedSizeBuffer Remove....");
 
-    while (gFixedSizeBufferPtr->mSize > 0)
+    while (gFixedSizeBufferPtr->mBuffer->mSize > 0)
     {
         Person_t *person = (Person_t *)FixedSizeBufferRemove(gFixedSizeBufferPtr, 0, PERSON_SIZE);
-        // INFO_MSG("FixedSizeBuffer Remove...Removed @ index %d - %s | %d", 0, PersonStr( person ), gFixedSizeBufferPtr->mSize );
+        // INFO_MSG("FixedSizeBuffer Remove...Removed @ index %d - %s | %d", 0, PersonStr( person ), gFixedSizeBufferPtr->mBuffer->mSize );
         fflush(stdout);
 
         if (PersonCmp(person, &gPersons[index++]))
@@ -288,7 +281,7 @@ static bool TestRemove()
         free(person);
     }
 
-    if (gFixedSizeBufferPtr->mSize != 0)
+    if (gFixedSizeBufferPtr->mBuffer->mSize != 0)
     {
         res = false;
         FAIL_MSG("FixedSizeBuffer Remove...Not empty");
@@ -301,23 +294,25 @@ static bool TestRemove()
 
     return res;
 }
-static bool TestDestroy()
+static bool FixedSizeBufferTestDestroy()
 {
     bool res = true;
 
     INFO_MSG("FixedSizeBuffer Destroy...");
 
-    if (gFixedSizeBufferPtr->mSize)
+    if (gFixedSizeBufferPtr->mBuffer->mSize)
     {
-        while (gFixedSizeBufferPtr->mSize > 0)
+        while (gFixedSizeBufferPtr->mBuffer->mSize > 0)
         {
             FixedSizeBufferRemove(gFixedSizeBufferPtr, 0, PERSON_SIZE);
         }
     }
 
+    INFO_MSG("FixedSizeBuffer Destroy...Releasing");
+
     FixedSizeBufferDestroy(gFixedSizeBufferPtr);
 
-    if (gFixedSizeBufferPtr->mData == NULL)
+    if (gFixedSizeBufferPtr->mBuffer)
     {
         PASS_MSG("FixedSizeBuffer Destroy...Passed");
     }

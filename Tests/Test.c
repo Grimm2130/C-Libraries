@@ -12,7 +12,7 @@ int main()
 
     if (RunTestsBuffer())
     {
-        if (RunTestsFixedSizeBuffer())
+        if (RunFixedSizeBuffersFixedSizeBuffer())
         {
             if (RunTestsLists())
             {
