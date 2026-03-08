@@ -11,3 +11,9 @@ target_link_libraries(${LIB_BUFFER} PRIVATE ${LIB_MEM_UTILS} ${LIB_PRINT_UTILS})
 add_library(${LIB_FIXED_SIZE_BUFFER} STATIC FixedSizeBuffer.c)
 target_include_directories(${LIB_FIXED_SIZE_BUFFER} BEFORE PRIVATE ${DIR_UTILS} ${LIB_BUFFER} )
 target_link_libraries(${LIB_FIXED_SIZE_BUFFER} PRIVATE ${LIB_MEM_UTILS} ${LIB_PRINT_UTILS})
+
+add_library(${LIB_STACK} STATIC Stack.c)
+target_link_libraries(${LIB_STACK} PRIVATE ${LIB_FIXED_SIZE_BUFFER})
+
+add_library(${LIB_QUEUE} STATIC Queue.c)
+target_link_libraries(${LIB_QUEUE} PRIVATE ${LIB_FIXED_SIZE_BUFFER})

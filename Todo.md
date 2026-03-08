@@ -1,22 +1,20 @@
 # Todo List
 
-- [ ] Implement Variable Size FixedSizeBuffer. Use implementation of current buffer
+- [x] Implement Variable Size FixedSizeBuffer. Use implementation of current buffer
 
-- [ ] Test Variable Size FixedSizeBuffer.
+- [x] Test FixedSizeBuffer with memory operations handled by Buffer object.
 
-- [ ] Implement Fixed Size FixedSizeBuffer. Use implementation of current buffer
+- [x] Implement Fixed Size FixedSizeBuffer. Use implementation of current buffer
 
-- [ ] Test Fixed Size FixedSizeBuffer
+- [x] Test Fixed Size FixedSizeBuffer
 
-- [ ] Implement Stack
-    - FixedSizeBuffer
-    - List
+- [x] Implement Stack with FixedSizeBuffer
 
-- [ ] Implement Queue
-    - FixedSizeBuffer
-    - List
+- [x] Implement Queue with FixedSizeBuffer
 
 - [ ] Complete String Steamer implementation
+
+- [ ] Test String Streamer implementation
 
 - [ ] Implement string builder
 
@@ -27,3 +25,7 @@
 - [ ] Implement File Steamer (Binary)
     - [ ] Implement File Reader (Binary)
     - [ ] Implement File Writer (Binary)
+
+- [ ] Implement Stack with List
+
+- [ ] Implement Queue with List

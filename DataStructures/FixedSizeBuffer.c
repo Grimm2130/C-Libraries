@@ -56,6 +56,7 @@ inline static void UpdateMem(FixedSizeBuffer_t *const obj, const int size)
 void FixedSizeBufferInit(FixedSizeBuffer_t *obj, const uint16_t tsize, const uint32_t capacity)
 {
     obj->mItemSize = tsize;
+    obj->mItemCapacity = capacity;
     // printf("For item of size %u, %u blocks requested. Total Expected %u\n", tsize, capacity, tsize * capacity );
     obj->mBuffer = BufferCreate( tsize * capacity );
 }

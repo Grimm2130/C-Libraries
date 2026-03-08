@@ -409,15 +409,24 @@ static const Person_t gPersons[  ] = {
 
 int PersonCmp( const Person_t* a, const Person_t* b )
 {
-    int res;
+    int res = 0;
 
     if( (res = INT_CMP( a->age, b->age) ) == 0 )
     {
         if( (res = FLT_CMP( a->height, b->height)) == 0 )
         {
             res = strcmp( a->name, b->name );
+            // if( res ) INFO_MSG("\t\tMismatch on name");
         }
+        // else
+        // {
+        //     INFO_MSG("\t\tMismatch on height");
+        // }
     }
+    // else
+    // {
+    //     INFO_MSG("\t\tMismatch on age");
+    // }
     
     return res;
 }
@@ -426,6 +435,7 @@ int PersonCmp( const Person_t* a, const Person_t* b )
 const char* PersonStr(  const Person_t* obj )
 {
     static char str[0x100];
+    memset( str, 0, 0x100 );
     snprintf( str, 0x100, "{Age: %d, Height: %f, Name: %s}", obj->age, obj->height, obj->name );
     return str;
 }

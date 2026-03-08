@@ -34,6 +34,8 @@ target_link_libraries(${EXE_TESTS} PRIVATE
     ${LIB_PRINT_UTILS}
     ${LIB_BUFFER}
     ${LIB_FIXED_SIZE_BUFFER}
+    ${LIB_STACK}
+    ${LIB_QUEUE}
     ${LIB_LISTS}
     ${LIB_TRIE}
     ${LIB_FILE}

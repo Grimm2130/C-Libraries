@@ -5,6 +5,8 @@
 #include "TrieTester.h"
 #include "FileTester.h"
 #include "DirectoryTester.h"
+#include "StackTester.h"
+#include "QueueTester.h"
 
 int main()
 {
@@ -14,16 +16,22 @@ int main()
     {
         if (RunFixedSizeBuffersFixedSizeBuffer())
         {
-            if (RunTestsLists())
+            if (RunTestsStackTester())
             {
-                // Test Trie Functionality
-                if (RunTestsTrie())
+                if (RunTestsQueueTester())
                 {
-                    if (RunTestsFileTester())
+                    if (RunTestsLists())
                     {
-                        if (RunTestDirectoryTester())
+                        // Test Trie Functionality
+                        if (RunTestsTrie())
                         {
-                            res = 0;
+                            if (RunTestsFileTester())
+                            {
+                                if (RunTestDirectoryTester())
+                                {
+                                    res = 0;
+                                }
+                            }
                         }
                     }
                 }

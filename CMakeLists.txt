@@ -17,6 +17,8 @@ set(LIB_LISTS "List")
 set(LIB_TRIE "Trie")
 set(LIB_BUFFER "Buffer")
 set(LIB_FIXED_SIZE_BUFFER "FixedSizeBuffer")
+set(LIB_STACK "Stack")
+set(LIB_QUEUE "Queue")
 
 set(LIB_FILE "File")
 set(LIB_DIRECTORY "Directory")
