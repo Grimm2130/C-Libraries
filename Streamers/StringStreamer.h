@@ -4,17 +4,20 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "StreamerPosition.h"
 
 #define SOF ((char)128U)
+
+typedef struct Stack Stack_t;
 
 /// @brief String streamer class
 typedef struct StringStreamer
 {
     bool mCopied;
-    uint32_t mRow;
-    uint32_t mCol;
     uint32_t mIndex;
-    size_t  mSize;
+    uint32_t mSize;
+    StreamerPosition_t mPos;
+    Stack_t *mLastPos;
     char * mStream;
 } StringStreamer_t;
 

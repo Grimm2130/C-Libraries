@@ -1,5 +1,6 @@
 #include "StringStreamer.h"
 #include "Utils.h"
+#include "Stack.h"
 #include <stdio.h>
 
 #include <memory.h>
@@ -23,37 +24,48 @@ static void StringStreamerProcessNext(StringStreamer_t * streamObj, const char n
 {
     switch( next )
     {
-        case '\n':
-            streamObj->mCol = 0;
-            streamObj->mRow++;
-        break;
-            
-        default:    
-            streamObj->mCol++;
-        break;
+    case '\n':
+        // Store the last position
+        StackPush( streamObj->mLastPos, &(streamObj->mPos), STREAMER_POSITION_SIZE );
+        streamObj->mPos.col = 0;
+        streamObj->mPos.row++;
+    break;
+        
+    default:    
+        streamObj->mPos.col++;
+    break;
     }
 }
 
 static void StringStreamerProcessPrev(StringStreamer_t * streamObj, const char next )
 {
-    // switch( next )
-    // {
-    //     case '\n':
-    //         streamObj->mCol = 0;
-    //         streamObj->mRow++;
-    //     break;
-            
-    //     default:    
-    //         streamObj->mCol++;
-    //     break;
-    // }
+    StreamerPosition_t *last;
+    
+    switch( next )
+    {
+    case '\n':
+        if( StackIsEmpty( streamObj->mLastPos ) == false )
+        {
+            if( (last = (StreamerPosition_t*)StackTop( streamObj->mLastPos )) )
+            {
+                streamObj->mPos.col = last->col;
+                streamObj->mPos.row = last->row;
+                StackPop( streamObj->mLastPos );
+            }
+        }
+    break;
+        
+    default:    
+        streamObj->mPos.col--;
+    break;
+    }
 }
 
 void StringStreamerInit( StringStreamer_t * streamObj, const char* stream, bool copy )
 {
     size_t len = strlen(stream);
     
-    streamObj->mCol = streamObj->mRow = streamObj->mIndex = 0;
+    streamObj->mPos.col = streamObj->mPos.row = streamObj->mIndex = 0;
 
     if( copy )
     {
@@ -68,6 +80,9 @@ void StringStreamerInit( StringStreamer_t * streamObj, const char* stream, bool 
     {
         streamObj->mStream = (char*)stream;
     }
+
+    // Allocate stack for tracking last position
+    streamObj->mLastPos = StackCreate( STREAMER_POSITION_SIZE, 1000U );
     streamObj->mSize = len;
 }
 
@@ -78,10 +93,9 @@ StringStreamer_t *StringStreamerCreate( const char* stream, bool copy )
     return obj;
 }
 
-void StringStreamerRelease( StringStreamer_t * )
+void StringStreamerRelease( StringStreamer_t * stream )
 {
-    // TODO:
-    error
+
 }
 
 // get the next character in the stream
