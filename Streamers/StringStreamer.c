@@ -5,17 +5,17 @@
 
 #include <memory.h>
 
-static bool StringStreamerEmpty(StringStreamer_t * streamObj );
-static bool StringStreamerFull(StringStreamer_t * streamObj );
+static bool StringStreamerAtEnd(StringStreamer_t * streamObj );
+static bool StringStreamerAtBeginning(StringStreamer_t * streamObj );
 static void StringStreamerProcessNext(StringStreamer_t * streamObj, const char next );
 static void StringStreamerProcessPrev(StringStreamer_t * streamObj, const char next );
 
-static bool StringStreamerEmpty(StringStreamer_t * streamObj )
+static bool StringStreamerAtEnd(StringStreamer_t * streamObj )
 {
-    return streamObj->mIndex >= streamObj->mSize;
+    return streamObj->mIndex == streamObj->mSize;
 }
 
-static bool StringStreamerFull(StringStreamer_t * streamObj )
+static bool StringStreamerAtBeginning(StringStreamer_t * streamObj )
 {
     return streamObj->mIndex == 0;
 }
@@ -95,7 +95,25 @@ StringStreamer_t *StringStreamerCreate( const char* stream, bool copy )
 
 void StringStreamerRelease( StringStreamer_t * stream )
 {
+    if( stream )
+    {
+        stream->mIndex = stream->mSize = 0;
 
+        STREAMER_POSITION_RESET( (stream->mPos) );
+
+        // Clean up streamer stream memory
+        if( stream->mCopied )
+        {
+            if( stream->mStream )
+            {
+                free( stream->mStream );
+            }
+        }
+        stream->mStream = NULL;
+        
+        StackRelease( stream->mLastPos );
+        stream->mLastPos = NULL;
+    }
 }
 
 // get the next character in the stream
@@ -115,7 +133,7 @@ char StringStreamerPeekFront( StringStreamer_t* streamObj )
 {
     char res;
 
-    if(  StringStreamerEmpty(streamObj) )
+    if(  StringStreamerAtEnd(streamObj) )
     {
         res = '\0';
     }
@@ -131,7 +149,7 @@ char StringStreamerPeekBack( StringStreamer_t* streamObj )
 {
     char res;
 
-    if(  StringStreamerFull(streamObj) )
+    if(  StringStreamerAtBeginning(streamObj) )
     {
         res = '\0';
     }

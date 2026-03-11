@@ -28,7 +28,7 @@
 
 # Generate final exe
 add_executable(${EXE_TESTS} Test.c)
-target_include_directories(${EXE_TESTS} PUBLIC ${DIR_UTILS} ${DIR_DATA_STRUCTURES} ${DIR_FILE_SYS})
+target_include_directories(${EXE_TESTS} PUBLIC ${DIR_UTILS} ${DIR_DATA_STRUCTURES} ${DIR_FILE_SYS} ${DIR_STREAMERS} )
 target_link_libraries(${EXE_TESTS} PRIVATE
     ${LIB_MEM_UTILS}
     ${LIB_PRINT_UTILS}
@@ -36,6 +36,7 @@ target_link_libraries(${EXE_TESTS} PRIVATE
     ${LIB_FIXED_SIZE_BUFFER}
     ${LIB_STACK}
     ${LIB_QUEUE}
+    ${LIB_STRING_STREAMER}
     ${LIB_LISTS}
     ${LIB_TRIE}
     ${LIB_FILE}

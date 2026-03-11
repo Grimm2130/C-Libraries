@@ -7,6 +7,7 @@
 #include "DirectoryTester.h"
 #include "StackTester.h"
 #include "QueueTester.h"
+#include "StringStreamerTester.h"
 
 int main()
 {
@@ -29,7 +30,10 @@ int main()
                             {
                                 if (RunTestDirectoryTester())
                                 {
-                                    res = 0;
+                                    if (RunTestStringStreamerTester())
+                                    {
+                                        res = 0;
+                                    }
                                 }
                             }
                         }
