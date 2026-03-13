@@ -22,10 +22,11 @@ typedef struct FixedSizeBuffer
 void FixedSizeBufferInit(FixedSizeBuffer_t *obj, const uint16_t tsize, const uint32_t capacity);
 FixedSizeBuffer_t *FixedSizeBufferCreate(const uint16_t typeSize, const uint32_t capacity);
 void FixedSizeBufferDestroy(FixedSizeBuffer_t *obj);
-void FixedSizeBufferAppend(FixedSizeBuffer_t *obj, void *dataPtr, const uint16_t size);
-void FixedSizeBufferPrepend(FixedSizeBuffer_t *obj, void *dataPtr, const uint16_t size);
+bool FixedSizeBufferAppend(FixedSizeBuffer_t *obj, void *dataPtr, const uint16_t size);
+bool FixedSizeBufferPrepend(FixedSizeBuffer_t *obj, void *dataPtr, const uint16_t size);
+bool FixedSizeBufferInsert(FixedSizeBuffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size);
 void *FixedSizeBufferGet(FixedSizeBuffer_t *obj, const uint32_t index, const uint16_t size);
-void FixedSizeBufferSet(FixedSizeBuffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size);
+bool FixedSizeBufferSet(FixedSizeBuffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size);
 void *FixedSizeBufferRemove(FixedSizeBuffer_t *obj, const uint32_t index, const uint16_t size);
 void *FixedSizeBufferGetLast(FixedSizeBuffer_t *obj, const uint32_t size);
 char *FixedSizeBufferGetDataPtr(FixedSizeBuffer_t *obj, bool copy);

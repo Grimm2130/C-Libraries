@@ -22,6 +22,21 @@ int Memncpy( char *dst, const char *src, const size_t dstSize, const size_t srcS
     return copySize;
 }
 
+int Memncmp( char *s1, const char *s2, const size_t sz1, const size_t sz2 )
+{
+    
+    if( s1 )
+    {
+        if( s2 )
+        {
+            int sz  = MIN( MAX(0, sz1), MAX(0, sz2) );
+            return memcmp( s1, s2, sz );
+        }
+    }
+    
+    return -1;
+}
+
 
 int Strncpy( char *dst, const char *src, const size_t dstSize, const size_t srcSize )
 {

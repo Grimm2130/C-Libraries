@@ -17,10 +17,11 @@ typedef struct Buffer
 void BufferInit(Buffer_t *obj, const uint32_t capacity);
 Buffer_t *BufferCreate(const uint32_t capacity);
 void BufferDestroy(Buffer_t *obj);
-void BufferAppend(Buffer_t *obj, void *dataPtr, const uint16_t size);
-void BufferPrepend(Buffer_t *obj, void *dataPtr, const uint16_t size);
+bool BufferAppend(Buffer_t *obj, void *dataPtr, const uint16_t size);
+bool BufferPrepend(Buffer_t *obj, void *dataPtr, const uint16_t size);
+bool BufferInsert(Buffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size);
 void *BufferGet(Buffer_t *obj, const uint32_t index, const uint16_t size);
-void BufferSet(Buffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size);
+bool BufferSet(Buffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size);
 void *BufferRemove(Buffer_t *obj, const uint32_t index, const uint16_t size);
 void *BufferGetLast(Buffer_t *obj, const uint32_t size);
 char *BufferGetDataPtr(Buffer_t *obj, bool copy);

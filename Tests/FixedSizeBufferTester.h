@@ -17,6 +17,7 @@ static bool FixedSizeBufferTestDestroy();
 static bool FixedSizeBufferTestGetter();
 static bool FixedSizeBufferTestSetter();
 static bool FixedSizeBufferTestPrepend();
+static bool FixedSizeBufferTestInsert();
 
 static const int gFixedSizeBufferCapacity = PERSONS_COUNT;
 FixedSizeBuffer_t *gFixedSizeBufferPtr = NULL;
@@ -39,10 +40,16 @@ bool RunFixedSizeBuffersFixedSizeBuffer()
                         {
                             if (FixedSizeBufferTestRemove())
                             {
-                                if (FixedSizeBufferTestDestroy())
+                                if( FixedSizeBufferTestInsert() )
                                 {
-                                    gFixedSizeBufferPtr = NULL;
-                                    res = true;
+                                    if (FixedSizeBufferTestDestroy())
+                                    {
+                                        gFixedSizeBufferPtr = NULL;
+                                        res = true;
+                                    }
+                                    else
+                                    {
+                                    }
                                 }
                                 else
                                 {
@@ -316,6 +323,41 @@ static bool FixedSizeBufferTestDestroy()
     {
         PASS_MSG("FixedSizeBuffer Destroy...Passed");
     }
+
+    return res;
+}
+
+static bool FixedSizeBufferTestInsert()
+{
+    uint32_t index;
+    bool res = true;
+    Person_t *person;
+
+    INFO_MSG("FixedSizeBuffer Insert...");
+
+    for (int i = PERSONS_COUNT - 1; i >= 0; i--)
+    {
+        FixedSizeBufferInsert(gFixedSizeBufferPtr, 0, (void *)&gPersons[i], PERSON_SIZE);
+        person = (Person_t *)gFixedSizeBufferPtr->mBuffer->mData;
+        // INFO_MSG("Prepended From index %d - %s", i, PersonStr(person) );
+    }
+
+    for (int i = 0; i < 100; i++)
+    {
+        index = rand() % PERSONS_COUNT;
+        person = (Person_t *)FixedSizeBufferGet(gFixedSizeBufferPtr, index, PERSON_SIZE);
+
+        // INFO_MSG("Retrieved From index %d - %s", index, PersonStr(person) );
+
+        if (PersonCmp(person, &gPersons[index]))
+        {
+            FAIL_MSG("FixedSizeBuffer Insert...Failed @ index %d - { %s != %s}", index, PersonStr(person), PersonStr(&gPersons[index]) );
+            res = false;
+            break;
+        }
+    }
+
+    PASS_MSG("FixedSizeBuffer Insert...Done");
 
     return res;
 }

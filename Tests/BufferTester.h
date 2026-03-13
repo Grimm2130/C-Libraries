@@ -17,6 +17,7 @@ static bool BufferTestDestroy();
 static bool BufferTestGetter();
 static bool BufferTestSetter();
 static bool BufferTestPrepend();
+static bool BufferTestInsert();
 
 static const int gBufferCapacity = PERSONS_COUNT * PERSON_SIZE;
 Buffer_t *gBufferPtr = NULL;
@@ -39,13 +40,20 @@ bool RunTestsBuffer()
                         {
                             if (BufferTestRemove())
                             {
-                                if (BufferTestDestroy())
+                                if( BufferTestInsert() )
                                 {
-                                    gBufferPtr = NULL;
-                                    res = true;
+                                    if (BufferTestDestroy())
+                                    {
+                                        gBufferPtr = NULL;
+                                        res = true;
+                                    }
+                                    else
+                                    {
+                                    }
                                 }
                                 else
                                 {
+
                                 }
                             }
                             else
@@ -192,6 +200,41 @@ static bool BufferTestPrepend()
     }
 
     PASS_MSG("Buffer Prepend...Done");
+
+    return res;
+}
+
+static bool BufferTestInsert()
+{
+    uint32_t index;
+    bool res = true;
+    Person_t *front, *back;
+
+    INFO_MSG("Buffer Insert...");
+
+    for (int i = PERSONS_COUNT-1; i >= 0; i-- )
+    {
+        front = (Person_t *)gBufferPtr->mData;
+        // FAIL_MSG("\t-Buffer Insert... %s @ %d", PersonStr( front), index );
+        BufferInsert( gBufferPtr, 0, (void *)&gPersons[i], PERSON_SIZE );
+    }
+
+    for (int i = 0; i < 100; i++)
+    {
+        index = rand() % PERSONS_COUNT;
+        front = (Person_t *)BufferGet(gBufferPtr, (index * PERSON_SIZE), PERSON_SIZE);
+
+        // INFO_MSG("Retrieved From index %d - %s", index, PersonStr(person) );
+
+        if (PersonCmp(front, &gPersons[index]))
+        {
+            FAIL_MSG("\t-Buffer Insert...Failed @ index %d", index);
+            res = false;
+            break;
+        }
+    }
+
+    PASS_MSG("Buffer Insert...Passed");
 
     return res;
 }

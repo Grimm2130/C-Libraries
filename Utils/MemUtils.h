@@ -4,6 +4,8 @@
 #include <stdio.h>
 
 int Memncpy( char *dst, const char *src, const size_t dstSize, const size_t srcSize );
+int Memncmp( char *s1, const char *s2, const size_t sz1, const size_t sz2 );
+
 int Strncpy( char *dst, const char *src, const size_t dstSize, const size_t srcSize );
 
 #endif // __MEM_UTILS_H__

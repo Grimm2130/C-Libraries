@@ -9,48 +9,22 @@
 /// @brief  Validate the buffer type size
 /// @param obj
 /// @param size
-inline static void ValidateType(FixedSizeBuffer_t *const obj, const int size)
+inline static bool ValidateType(FixedSizeBuffer_t *const obj, const int size)
 {
+    bool res = true;
+
     if (obj->mItemSize != size)
     {
+        res = false;
         ERROR_MSG("BuffeAppend@(%p) Unexpected type size\n", (void *)obj);
     }
+
+    return res;
 }
 
 inline static uint32_t FixedSizeBufferComputeEffectiveIndex( const uint32_t index, const uint16_t size )
 {
     return (index * (uint32_t)size);
-}
-
-
-/// @brief Update the buffer memory of needed
-/// @param obj
-/// @param size
-inline static void UpdateMem(FixedSizeBuffer_t *const obj, const int size)
-{
-    uint32_t currCapInBytes = obj->mBuffer->mCurrCapacity * obj->mItemSize;
-    uint32_t totalCapInBytes = obj->mBuffer->mCapacity * obj->mItemSize;
-    uint32_t bytesAvail = currCapInBytes - obj->mBuffer->mSize;
-    uint32_t totalBytesAvail = totalCapInBytes - obj->mBuffer->mSize;
-
-    // Cna fit daa in current sized buffer
-    if (bytesAvail < size)
-    {
-        // Can Allocate more data in buffer
-        if (totalBytesAvail < size)
-        {
-            ERROR_MSG("@(%p) out of capacity need %u (%u/%u)\n", (void *)obj, size, totalBytesAvail, totalCapInBytes);
-        }
-
-        // Update the size
-        int newCap = MIN(obj->mBuffer->mCurrCapacity * 2, obj->mBuffer->mCapacity);
-        obj->mBuffer->mData = (char *)realloc(obj->mBuffer->mData, newCap * obj->mItemSize);
-        if (obj->mBuffer->mData == NULL)
-        {
-            ERROR_MSG("BuffeAppend@(%p) Mem reallocation failed\n", (void *)obj);
-        }
-        obj->mBuffer->mCurrCapacity = newCap;
-    }
 }
 
 void FixedSizeBufferInit(FixedSizeBuffer_t *obj, const uint16_t tsize, const uint32_t capacity)
@@ -80,49 +54,76 @@ void FixedSizeBufferDestroy(FixedSizeBuffer_t *obj)
     }
 }
 
-void FixedSizeBufferAppend(FixedSizeBuffer_t *obj, void *dataPtr, const uint16_t size)
+bool FixedSizeBufferAppend(FixedSizeBuffer_t *obj, void *dataPtr, const uint16_t size)
 {
-    ValidateType(obj, size);
-    // UpdateMem(obj, size);
-
-    BufferAppend( obj->mBuffer, dataPtr, size );
+    if( ValidateType(obj, size) )
+    {
+        return BufferAppend( obj->mBuffer, dataPtr, size );
+    }
+    
+    return false;
 }
 
-void FixedSizeBufferPrepend(FixedSizeBuffer_t *obj, void *dataPtr, const uint16_t size)
+bool FixedSizeBufferPrepend(FixedSizeBuffer_t *obj, void *dataPtr, const uint16_t size)
 {
-    ValidateType(obj, size);
+    if( ValidateType(obj, size) )
+    {
+        return BufferPrepend( obj->mBuffer, dataPtr, size );
+    }
+    
+    return false;
+}
 
-    BufferPrepend( obj->mBuffer, dataPtr, size );
+bool FixedSizeBufferInsert(FixedSizeBuffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size)
+{
+    if( ValidateType(obj, size) )
+    {
+        return BufferInsert( obj->mBuffer, FixedSizeBufferComputeEffectiveIndex( index, size ), dataPtr, size );
+    }
+    
+    return false;
 }
 
 void *FixedSizeBufferGet(FixedSizeBuffer_t *obj, const uint32_t index, const uint16_t size)
 {
-    ValidateType(obj, size);
-
-    return BufferGet( obj->mBuffer, FixedSizeBufferComputeEffectiveIndex( index, size ), size );
+    if( ValidateType(obj, size) )
+    {
+        return BufferGet( obj->mBuffer, FixedSizeBufferComputeEffectiveIndex( index, size ), size );
+    }
+    
+    return false;
 }
 
-void FixedSizeBufferSet(FixedSizeBuffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size)
+bool FixedSizeBufferSet(FixedSizeBuffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size)
 {
-    ValidateType(obj, size);
+    if( ValidateType(obj, size) )
+    {
+        return BufferSet( obj->mBuffer, FixedSizeBufferComputeEffectiveIndex( index, size ), dataPtr, size );
+    }
 
-    BufferSet( obj->mBuffer, FixedSizeBufferComputeEffectiveIndex( index, size ), dataPtr, size );
+    return false;
 }
 
 void *FixedSizeBufferRemove(FixedSizeBuffer_t *obj, const uint32_t index, const uint16_t size)
 {
-    ValidateType(obj, size);
-
-    void *dataPtr = BufferRemove( obj->mBuffer, FixedSizeBufferComputeEffectiveIndex( index, size ), size );
+    void *dataPtr = NULL;
+    
+    if( ValidateType(obj, size) )
+    {
+        dataPtr = BufferRemove( obj->mBuffer, FixedSizeBufferComputeEffectiveIndex( index, size ), size );
+    }
 
     return dataPtr;
 }
 
 void *FixedSizeBufferGetLast(FixedSizeBuffer_t *obj, const uint32_t size)
 {
-    ValidateType(obj, size);
+    void *dataPtr = NULL;
 
-    void *dataPtr = BufferGetLast( obj->mBuffer, size );
+    if(ValidateType(obj, size))
+    {
+        dataPtr = BufferGetLast( obj->mBuffer, size );
+    }
 
     return dataPtr;
 }

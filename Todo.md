@@ -12,11 +12,21 @@
 
 - [x] Implement Queue with FixedSizeBuffer
 
-- [ ] Complete String Steamer implementation
+- [x] Complete String Steamer implementation
 
-- [ ] Test String Streamer implementation
+- [x] Test String Streamer implementation
 
-- [ ] Implement string builder
+- [x] Update all buffer functions to return true or false on success or failure
+
+- [x] Add insertion functionality 
+
+- [x] Implement string object
+
+- [ ] Test string object
+
+---
+
+- [ ] Add delete functionality to the trie data structure
 
 - [ ] Implement File Steamer (Ascii)
     - [ ] Implement File Reader (Ascii)

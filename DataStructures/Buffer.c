@@ -10,20 +10,22 @@
 /// @brief Update the buffer memory of needed
 /// @param obj
 /// @param size
-inline static void UpdateMem(Buffer_t *const obj, const int size)
+inline static bool UpdateMem(Buffer_t *const obj, const int size)
 {
+    bool res = true;
     uint32_t currCapInBytes = obj->mCurrCapacity;
     uint32_t totalCapInBytes = obj->mCapacity;
     uint32_t bytesAvail = currCapInBytes - obj->mSize;
     uint32_t totalBytesAvail = totalCapInBytes - obj->mSize;
 
     // Cna fit daa in current sized buffer
-    if (bytesAvail < size)
+    if (bytesAvail >= size)
     {
         // Can Allocate more data in buffer
         if (totalBytesAvail < size)
         {
             ERROR_MSG("@(%p) out of capacity need %u (%u/%u)\n", (void *)obj, size, totalBytesAvail, totalCapInBytes);
+            res = false;
         }
         else
         {
@@ -32,11 +34,21 @@ inline static void UpdateMem(Buffer_t *const obj, const int size)
             obj->mData = (char *)realloc(obj->mData, newCap);
             if (obj->mData == NULL)
             {
+                res = false;
                 ERROR_MSG("BuffeAppend@(%p) Mem reallocation failed\n", (void *)obj);
             }
-            obj->mCurrCapacity = newCap;
+            else
+            {
+                obj->mCurrCapacity = newCap;
+            }
         }
     }
+    else
+    {
+        res = false;
+    }
+
+    return res;
 }
 
 void BufferInit(Buffer_t *obj, const uint32_t capacity)
@@ -66,34 +78,60 @@ void BufferDestroy(Buffer_t *obj)
     }
 }
 
-void BufferAppend(Buffer_t *obj, void *dataPtr, const uint16_t size)
+bool BufferAppend(Buffer_t *obj, void *dataPtr, const uint16_t size)
 {
-    UpdateMem(obj, size);
+    bool res = false;
 
-    int copied = Memncpy((obj->mData + obj->mSize), (char *)dataPtr, size, size);
-
-    if (copied < size)
+    if( UpdateMem(obj, size) )
     {
-        ERROR_MSG("BufferAppend@(%p) Append operation failed\n", ((void *)(obj)));
+        int copied = Memncpy((obj->mData + obj->mSize), (char *)dataPtr, size, size);
+    
+        if (copied == size)
+        {
+            obj->mSize += size;
+            res = true;
+        }
     }
 
-    obj->mSize += size;
+    return res;
 }
 
-void BufferPrepend(Buffer_t *obj, void *dataPtr, const uint16_t size)
+bool BufferPrepend(Buffer_t *obj, void *dataPtr, const uint16_t size)
 {
-    UpdateMem(obj, size);
+    bool res = false;
 
-    // Shift the data
-    // if( obj->mSize )
-    ShiftData(obj->mData, (obj->mCurrCapacity), 0, size, obj->mSize);
-
-    if (Memncpy(obj->mData, (char *)dataPtr, size, size) != size)
+    if( UpdateMem(obj, size) )
     {
-        ERROR_MSG("BufferPrepend@(%p) Prepend operation failed\n", ((void *)(obj)));
+        if( ShiftData(obj->mData, (obj->mCurrCapacity), 0, size, obj->mSize) == obj->mSize )
+        {
+            if (Memncpy(obj->mData, (char *)dataPtr, size, size) == size)
+            {
+                obj->mSize += size;
+                res = true;
+            }
+        }
     }
 
-    obj->mSize += size;
+    return res;
+}
+
+bool BufferInsert(Buffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size)
+{
+    bool res = false;
+
+    if( UpdateMem( obj, size ) )
+    {
+        if( ShiftData(obj->mData, (obj->mCurrCapacity), index, size + index, obj->mSize) == obj->mSize )
+        {
+            if (Memncpy((obj->mData + index), (char *)dataPtr, size, size) == size)
+            {
+                obj->mSize += size;
+                res = true;
+            }
+        }
+    }
+
+    return res;
 }
 
 void *BufferGet(Buffer_t *obj, const uint32_t index, const uint16_t size)
@@ -108,22 +146,25 @@ void *BufferGet(Buffer_t *obj, const uint32_t index, const uint16_t size)
     return (void *)(obj->mData + effSize);
 }
 
-void BufferSet(Buffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size)
+bool BufferSet(Buffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size)
 {
+    bool res = false;
     uint32_t effSize = index;
 
     if (effSize >= obj->mSize)
     {
         // WARN_MSG("BufferSet@(%p) Append operation failed\n", ((void *)(obj)));
-        return;
+        return res;
     }
 
     char *ptr = obj->mData + effSize;
 
-    if (Memncpy(ptr, (char *)dataPtr, size, size) == 0)
+    if (Memncpy(ptr, (char *)dataPtr, size, size) == size)
     {
-        ERROR_MSG("BufferSet@(%p) Failed\n", ((void *)(obj)));
+        res = true;
     }
+
+    return res;
 }
 
 void *BufferRemove(Buffer_t *obj, const uint32_t index, const uint16_t size)
