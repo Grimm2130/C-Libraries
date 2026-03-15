@@ -3,6 +3,6 @@ target_include_directories( ${LIB_STRING_STREAMER} BEFORE PRIVATE ${DIR_DATA_STR
 target_link_libraries( ${LIB_STRING_STREAMER} PUBLIC ${LIB_MEM_UTILS} )
 
 
-# add_library( ${LIB_DIRECTORY} STATIC Directory.c )
-# target_include_directories( ${LIB_DIRECTORY} BEFORE PRIVATE ${DIR_UTILS} )
-# target_link_libraries( ${LIB_DIRECTORY} PUBLIC ${LIB_MEM_UTILS} ${LIB_PRINT_UTILS} )
+add_library( ${LIB_STREAMER} STATIC Streamer.c )
+target_link_libraries( ${LIB_STREAMER} PUBLIC ${LIB_STRING_STREAMER} )
+# target_include_directories( ${LIB_STREAMER} BEFORE PRIVATE ${DIR_UTILS} )

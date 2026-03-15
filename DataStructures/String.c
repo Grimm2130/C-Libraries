@@ -37,6 +37,17 @@ bool StringPrepend( String_t *this, const char *str, const size_t len )
     return FixedSizeBufferPrepend( this->mBuffer, (void*) str, len );
 }
 
+void StringClear( String_t * this )
+{
+    this->mLen = 0;
+    if( this->mBuffer )
+    {
+        // delete buffer and reinstantiate
+        FixedSizeBufferDestroy( this->mBuffer );
+        this->mBuffer = FixedSizeBufferCreate( sizeof(char), DEFAULT_STRING_BUFFER_CAPACITY );
+    }
+}
+
 bool StringInsert( String_t *this, const uint32_t index, const char *str, const size_t len )
 {
     return FixedSizeBufferPrepend( this->mBuffer, (void*) str, len );

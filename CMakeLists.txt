@@ -3,12 +3,15 @@ cmake_minimum_required(VERSION 3.28)
 # ---- Options ----
 option(RUN_TESTS "Run tests if set to true" TRUE)
 
+
 # Directory Names
-set(DIR_UTILS "${CMAKE_SOURCE_DIR}/Utils")
-set(DIR_FILE_SYS "${CMAKE_SOURCE_DIR}/FileSystem")
-set(DIR_DATA_STRUCTURES "${CMAKE_SOURCE_DIR}/DataStructures")
-set(DIR_STREAMERS "${CMAKE_SOURCE_DIR}/Streamers")
-set(DIR_TESTS "${CMAKE_SOURCE_DIR}/Tests")
+set(DIR_GIT_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/ExternalModules" )
+set(DIR_UTILS "${CMAKE_CURRENT_SOURCE_DIR}/Utils")
+set(DIR_FILE_SYS "${CMAKE_CURRENT_SOURCE_DIR}/FileSystem")
+set(DIR_DATA_STRUCTURES "${CMAKE_CURRENT_SOURCE_DIR}/DataStructures")
+set(DIR_STREAMERS "${CMAKE_CURRENT_SOURCE_DIR}/Streamers")
+set(DIR_TESTS "${CMAKE_CURRENT_SOURCE_DIR}/Tests")
+set(DIR_CLIBS "${DIR_GIT_MODULES}/Clibs" )
 
 # Library Names
 set(LIB_MEM_UTILS "MemUtils")
@@ -21,6 +24,7 @@ set(LIB_FIXED_SIZE_BUFFER "FixedSizeBuffer")
 set(LIB_STACK "Stack")
 set(LIB_QUEUE "Queue")
 set(LIB_STRING_STREAMER "StringStreamer")
+set(LIB_STREAMER "Streamer")
 
 set(LIB_FILE "File")
 set(LIB_DIRECTORY "Directory")

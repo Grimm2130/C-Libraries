@@ -19,6 +19,7 @@ String_t *StringCreate( const char * str, const size_t len );
 void StringInit( String_t *, const char * str, const size_t len );
 bool StringAppend( String_t *, const char *, const size_t len );
 bool StringPrepend( String_t *, const char *, const size_t len );
+void StringClear( String_t * );
 bool StringInsert( String_t *, const uint32_t, const char *, const size_t len );
 bool StringContains( String_t *, const char *, const size_t len );
 uint32_t StringFind( String_t *, const char *, const size_t len );
