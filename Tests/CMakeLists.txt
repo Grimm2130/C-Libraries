@@ -41,6 +41,7 @@ target_link_libraries(${EXE_TESTS} PRIVATE
     ${LIB_TRIE}
     ${LIB_FILE}
     ${LIB_DIRECTORY}
+    ${LIB_STRING}
 )
 
 if(RUN_TESTS)

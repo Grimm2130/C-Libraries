@@ -3,19 +3,19 @@
 
 static char SSNext( void* streamer )
 {
-    StringStreamer_t *ssPtr = (StringStreamer_t*)streamer;
+    StringStreamer_t *ssPtr = ((Streamer_t*)streamer)->mStreamerObjPtr;
     return StringStreamerNext( ssPtr );
 }
 
 static char SSPeek( void* streamer )
 {
-    StringStreamer_t *ssPtr = (StringStreamer_t*)streamer;
+    StringStreamer_t *ssPtr = ((Streamer_t*)streamer)->mStreamerObjPtr;
     return StringStreamerPeekFront( ssPtr );
 }
 
 static void SSPush( void* streamer, const char c )
 {
-    StringStreamer_t *ssPtr = (StringStreamer_t*)streamer;
+    StringStreamer_t *ssPtr = ((Streamer_t*)streamer)->mStreamerObjPtr;
     StringStreamerPrev( ssPtr );
 }
 

@@ -5,12 +5,12 @@
 #include  <stdint.h>
 #include  <stdbool.h>
 
-typedef struct FixedSizeBuffer FixedSizeBuffer_t;
+typedef struct Buffer Buffer_t;
 
 typedef struct String
 {
     uint32_t mLen;
-    FixedSizeBuffer_t * mBuffer;
+    Buffer_t * mBuffer;
 } String_t;
 
 #define DEFAULT_STRING_BUFFER_CAPACITY 0x1000
@@ -22,7 +22,7 @@ bool StringPrepend( String_t *, const char *, const size_t len );
 void StringClear( String_t * );
 bool StringInsert( String_t *, const uint32_t, const char *, const size_t len );
 bool StringContains( String_t *, const char *, const size_t len );
-uint32_t StringFind( String_t *, const char *, const size_t len );
+int StringFind( String_t *, const char *, const size_t len );
 uint32_t StringCopyToBuffer( String_t *, char *, const size_t len );
 char *StringCopyToBufferAlloc( String_t * );
 void StringRelease( String_t * );

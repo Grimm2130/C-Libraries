@@ -20,4 +20,4 @@ target_link_libraries(${LIB_QUEUE} PUBLIC ${LIB_FIXED_SIZE_BUFFER})
 
 add_library(${LIB_STRING} STATIC String.c)
 target_include_directories(${LIB_STRING} BEFORE PUBLIC ${DIR_UTILS} )
-target_link_libraries(${LIB_STRING} PUBLIC ${LIB_FIXED_SIZE_BUFFER})
+target_link_libraries(${LIB_STRING} PUBLIC ${LIB_BUFFER})

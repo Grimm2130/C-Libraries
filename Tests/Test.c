@@ -8,6 +8,7 @@
 #include "StackTester.h"
 #include "QueueTester.h"
 #include "StringStreamerTester.h"
+#include "StringTester.h"
 
 int main()
 {
@@ -32,7 +33,10 @@ int main()
                                 {
                                     if (RunTestStringStreamerTester())
                                     {
-                                        res = 0;
+                                        if( RunTestsStringTester() )
+                                        {
+                                            res = 0;
+                                        }
                                     }
                                 }
                             }

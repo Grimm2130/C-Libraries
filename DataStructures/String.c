@@ -1,5 +1,5 @@
 #include "String.h"
-#include "FixedSizeBuffer.h"
+#include "Buffer.h"
 #include "MemUtils.h"
 #include "MathUtils.h"
 #include <stdlib.h>
@@ -18,8 +18,8 @@ void StringInit( String_t * this, const char * str, const size_t len )
     if( this )
     {
         this->mLen = len;
-        this->mBuffer = FixedSizeBufferCreate( sizeof(char), DEFAULT_STRING_BUFFER_CAPACITY );
-        FixedSizeBufferAppend( this->mBuffer, (void*) str, len );
+        this->mBuffer = BufferCreate( DEFAULT_STRING_BUFFER_CAPACITY );
+        BufferAppend( this->mBuffer, (void*) str, len );
     }
     else
     {
@@ -29,12 +29,26 @@ void StringInit( String_t * this, const char * str, const size_t len )
 
 bool StringAppend( String_t * this, const char * str, const size_t len )
 {
-    return FixedSizeBufferAppend( this->mBuffer, (void*) str, len );
+    bool res;
+
+    if( (res = BufferAppend( this->mBuffer, (void*) str, len )) )
+    {
+        this->mLen += len;
+    }
+
+    return res;
 }
 
 bool StringPrepend( String_t *this, const char *str, const size_t len )
 {
-    return FixedSizeBufferPrepend( this->mBuffer, (void*) str, len );
+    bool res;
+
+    if( (res = BufferPrepend( this->mBuffer, (void*) str, len )) )
+    {
+        this->mLen += len;
+    }
+    
+    return res;
 }
 
 void StringClear( String_t * this )
@@ -43,14 +57,21 @@ void StringClear( String_t * this )
     if( this->mBuffer )
     {
         // delete buffer and reinstantiate
-        FixedSizeBufferDestroy( this->mBuffer );
-        this->mBuffer = FixedSizeBufferCreate( sizeof(char), DEFAULT_STRING_BUFFER_CAPACITY );
+        BufferDestroy( this->mBuffer );
+        this->mBuffer = BufferCreate( DEFAULT_STRING_BUFFER_CAPACITY );
     }
 }
 
 bool StringInsert( String_t *this, const uint32_t index, const char *str, const size_t len )
 {
-    return FixedSizeBufferPrepend( this->mBuffer, (void*) str, len );
+    bool res;
+
+    if( (res = BufferInsert( this->mBuffer, index, (void*) str, len )) )
+    {
+        this->mLen += len;
+    }
+    
+    return res;
 }
 
 bool StringContains( String_t * this, const char * str, const size_t len )
@@ -58,18 +79,17 @@ bool StringContains( String_t * this, const char * str, const size_t len )
     return (StringFind( this, str, len ) >= 0);
 }
 
-uint32_t StringFind( String_t *this, const char *str, const size_t len )
+int StringFind( String_t *this, const char *str, const size_t len )
 {
     int i;
     bool found = false;
-    char * s = (char*) FixedSizeBufferGetDataPtr( this->mBuffer, false );
+    char * s = (char*) BufferGetDataPtr( this->mBuffer, false );
 
     for( i = 0; i < this->mLen; i++ )
     {
         // first occurence
         if( s[i] == str[0] )
         {
-            
             if( Memncmp( s + i, str, (this->mLen - i), len ) == 0 )
             {
                 found = true;
@@ -89,7 +109,7 @@ uint32_t StringCopyToBuffer( String_t *this, char * buf, const size_t len )
     {
         copylen = MIN( this->mLen, len-1 );
 
-        if( Memncpy( buf, FixedSizeBufferGetDataPtr( this->mBuffer, false ), this->mLen, len-1 ) == copylen )
+        if( Memncpy( buf, BufferGetDataPtr( this->mBuffer, false ), this->mLen, len-1 ) == copylen )
         {
             buf[copylen] = '\0';
         }
@@ -120,7 +140,7 @@ void StringRelease( String_t * this )
         this->mLen = 0;
         if( this->mBuffer )
         {
-            FixedSizeBufferDestroy( this->mBuffer );
+            BufferDestroy( this->mBuffer );
             this->mBuffer = NULL;
         }
     }
