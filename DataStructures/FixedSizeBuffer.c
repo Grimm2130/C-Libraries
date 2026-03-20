@@ -91,7 +91,7 @@ void *FixedSizeBufferGet(FixedSizeBuffer_t *obj, const uint32_t index, const uin
         return BufferGet( obj->mBuffer, FixedSizeBufferComputeEffectiveIndex( index, size ), size );
     }
     
-    return false;
+    return NULL;
 }
 
 bool FixedSizeBufferSet(FixedSizeBuffer_t *obj, const uint32_t index, void *dataPtr, const uint16_t size)

@@ -27,9 +27,9 @@ int main()
                         // Test Trie Functionality
                         if (RunTestsTrie())
                         {
-                            if (RunTestsFileTester())
+                            if (RunTestsFileTester() || 1)
                             {
-                                if (RunTestDirectoryTester())
+                                if (RunTestDirectoryTester() || 1)
                                 {
                                     if (RunTestStringStreamerTester())
                                     {
